@@ -32,7 +32,7 @@ exports.getDocumentLists = async(req, res) => {
                 return res.json(JSON.parse(cachedData))
             }
         } catch (errCache) {
-            console.warn('⚠️ Cache Miss', err.message)
+            console.warn('⚠️ Cache Miss', errCache.message)
         }
     }
 
@@ -74,7 +74,26 @@ exports.getDocumentLists = async(req, res) => {
 
 //Get Document Detail
 exports.getDocumentDetail = async(req, res) => { 
+    //Redis implementation
+    const redis = getRedisClient(req.app)
+
     const documentId = req.params.documentId
+    const cacheKey = `getDocumentDetail:${documentId}`
+
+    //Check cache
+    if(redis) { 
+        try { 
+            const cachedData = await redis.get(cacheKey)
+            if(cachedData) { 
+                console.log('📦 Cache Hit')
+                return res.json(JSON.parse(cachedData))
+            }
+        } catch (errCache) {
+            console.warn('⚠️ Cache Miss', errCache.message)
+        }
+    }
+
+    //Fetch from API
     const apiConfig = {
         apiEndpoint : `/v2/esign/v1/documents/${documentId}`,
         apiMethod : 'GET',
@@ -88,6 +107,19 @@ exports.getDocumentDetail = async(req, res) => {
                 headers : headers
             }
         )
+        //Cache response in redis (write to redis)
+        if (redis) {  
+            try { 
+                // await redis.setEx(cacheKey, 300, JSON.stringify(response.data)) // TTL = 300s
+                await redis.set(cacheKey, JSON.stringify(response.data), { 
+                    EX: 100
+                })
+                console.log('💾 Write response to Redis cache')
+            } catch (err) {
+                console.warn('⚠️ Redis write failed', err.message)
+            }
+        }
+
         res.json(response.data)
     } catch (error) { 
         console.error('Get Documents Error : ', error.response?.data || error.message)
@@ -99,8 +131,25 @@ exports.getDocumentDetail = async(req, res) => {
 }
 
 //Download Document File
-exports.getDownload = async(req, res) => { 
+exports.getDownload = async(req, res) => {
+    const redis = getRedisClient(req.app)
+
     const documentId = req.params.documentId
+    const cacheKey = `getDownload:${documentId}`
+
+    //Check cache
+    if(redis) { 
+        try { 
+            const cachedData = await redis.get(cacheKey)
+            if(cachedData) { 
+                console.log('📦 Cache Hit')
+                return res.json(JSON.parse(cachedData))
+            }
+        } catch (errCache) {
+            console.warn('⚠️ Cache Miss', errCache.message)
+        }
+    }
+
     const apiConfig = {
         apiEndpoint : `/v2/esign/v1/documents/${documentId}/download`,
         apiMethod : 'GET',
@@ -114,6 +163,20 @@ exports.getDownload = async(req, res) => {
                 headers : headers
             }
         )
+
+        //Cache response in redis (write to redis)
+        if (redis) {  
+            try { 
+                // await redis.setEx(cacheKey, 300, JSON.stringify(response.data)) // TTL = 300s
+                await redis.set(cacheKey, JSON.stringify(response.data), { 
+                    EX: 100
+                })
+                console.log('💾 Write response to Redis cache')
+            } catch (err) {
+                console.warn('⚠️ Redis write failed', err.message)
+            }
+        }
+
         res.json(response.data)
     } catch (error) { 
         console.error('Get Documents Error : ', error.response?.data || error.message)
