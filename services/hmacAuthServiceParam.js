@@ -57,4 +57,4 @@ class HmacAuthServiceParam {
     }
 }
 
-module.exports = HmacAuthService
+module.exports = HmacAuthServiceParam

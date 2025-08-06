@@ -4,7 +4,8 @@ const { getRedisClient } = require('../services/redisHelper.js')
 
 //Get Profile -> Make API request to Mekari for profile with data from cache (if present, if not error)
 exports.getMekariProfile = async(req, res) => { 
-    const redis = getRedisClient(req.app)    
+    const redis = getRedisClient(req.app) 
+   
 
     const apiConfig = { 
         apiEndpoint : '/v2/esign/v1/profile',
@@ -36,7 +37,6 @@ exports.getProfileData = async (req, res) => {
         if(!redis) {
             throw new Error('Redis not available')
         }
-
         //Take data from cache
         const cachedClientID = await redis.get('clientID')
         const cachedClientSecret = await redis.get('clientSecret')
@@ -93,7 +93,7 @@ exports.postProfileData = async (req,res) => {
         if (!clientID || !clientSecret) {
             return res.status(400).json({ error: 'clientID and clientSecret are required' })
         }
-        
+
         await redis.del('clientID','clientSecret')
         
         await redis.set('clientID', clientID, { 

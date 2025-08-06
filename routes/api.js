@@ -8,7 +8,7 @@ const profileController = require('../controllers/profileController.js')
 router.get('/Mekariprofile', profileController.getMekariProfile)
 router.get('/getProfile', profileController.getProfileData) //change names
 router.post('/postProfile',profileController.postProfileData) //change names
-router.delete('delProfile', profileController.deleteProfileData) //change names
+router.delete('/delProfile', profileController.deleteProfileData) //change names
 
 router.get('/documents', getController.getDocumentLists)
 router.get('/documents/:documentId', getController.getDocumentDetail)
