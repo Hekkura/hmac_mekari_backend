@@ -2,6 +2,8 @@ const express = require('express')
 const cors = require('cors')
 const morgan = require('morgan')
 const dotenv = require('dotenv')
+
+
 dotenv.config()
 
 const app = express()
@@ -45,10 +47,9 @@ app.use(express.json({limit: '50mb'}))
 app.use(morgan('dev'))
 
 //Routes
-const apiRoutes = require('./routes/api')
-app.use('/api', apiRoutes)
+const apiRoutes = require('./routes/api.js')
+app.use('/', apiRoutes)
 
-//=========================
 // Health Check endpoint
 app.get('/health_chk', async(req,res) => { 
     try{ 
