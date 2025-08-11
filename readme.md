@@ -20,25 +20,40 @@ npx nodemon app.js
 
 ### Server runs at
 ```bash
-http://localhost:3000 or your designated port
+http://localhost:3000 or your designated port (adjusted in .env file)
 ```
 
 ## Endpoints
 
-### POST /request-sign
-- Send a signing request.
+### GET /getProfile
+- Get current session profile client ID.
 
-### POST /stamp-emeterai (Need quota from Mekari)
-- Apply an e-Meterai stamp to a document.
+### POST /postProfile
+- Send a request to replace the current running session client ID and profile
 
-### GET /profile
-- Fetch account profile.
+### DELETE /delProfile
+- Send a request to terminate currently running session client ID and profile
+
+### GET /mekariProfile
+- Fetch account profile using the currently running session client ID.
 
 ### GET /documents
 - List documents with optional query params: page, limit, category, signing_status.
 
 ### GET /documents/:documentId
-- Get status of a document.
+- Get status of a document according to the documentID.
 
 ### GET /download-pdf/:documentId
-- Download a signed PDF.
+- Download a signed PDF according to the document ID.
+
+### POST /requestSign
+- Send a signing request.
+
+### POST /stampEmeterai (Need quota from Mekari)
+- Apply an e-Meterai stamp to a document.
+
+### POST /documents/upload (Need quota from Mekari (?))
+- Upload a PDF document to be signed.
+
+### POST /documents/callback
+- Callback API for receiving callback after uploading document from the document/upload Endpoint.

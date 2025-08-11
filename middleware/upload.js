@@ -1,17 +1,16 @@
 const multer = require('multer')
 
-// // ==========================
 // multer config for file uploads
 const upload = multer({
-  storage: multer.memoryStorage(),
+  storage: multer.memoryStorage(),  // Store file in memory as Buffer
   limits: {
-    fileSize: 10 * 1024 * 1024, // 10MB
+    fileSize: 10 * 1024 * 1024, // Max file size 10MB
   },
   fileFilter: (req, file, cb) => {
     const allowedTypes = [
       'application/pdf',
-      'application/msword',
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      // 'application/msword',
+      // 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
     ];
 
     if (allowedTypes.includes(file.mimetype)) {

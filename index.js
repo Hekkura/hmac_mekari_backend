@@ -50,6 +50,11 @@ app.use(morgan('dev'))
 const apiRoutes = require('./routes/api.js')
 app.use('/', apiRoutes)
 
+
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
+
 // Health Check endpoint
 app.get('/health_chk', async(req,res) => { 
     try{ 
