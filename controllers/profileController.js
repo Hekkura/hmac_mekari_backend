@@ -6,7 +6,6 @@ const { getRedisClient } = require('../services/redisHelper.js')
 exports.getMekariProfile = async(req, res) => { 
     const redis = getRedisClient(req.app) 
    
-
     const apiConfig = { 
         apiEndpoint : '/v2/esign/v1/profile',
         apiMethod : 'GET',

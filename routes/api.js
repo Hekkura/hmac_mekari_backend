@@ -8,7 +8,7 @@ const profileController = require('../controllers/profileController.js')
 const callbackController = require('../controllers/callbackController.js')
 
 // Profiles
-router.get('/Mekariprofile', profileController.getMekariProfile)
+router.get('/mekariProfile', profileController.getMekariProfile)
 router.get('/getProfile', profileController.getProfileData) //change names
 router.post('/postProfile',profileController.postProfileData) //change names
 router.delete('/delProfile', profileController.deleteProfileData) //change names
@@ -26,14 +26,21 @@ router.post('/documents/upload',
 )
 router.post('/requestSign', postController.postRequestSign)
 
+router.post('/requestSign-test',
+    upload.single('doc'),
+    handleMulterError,
+    postController.postRequestSignTEST
+    )
+
+
 // Callback Routes
-// router.post('/documents/callback', express.json(), callbackController.handleDocumentUploadCallback)
-router.post('/documents/callback', express.json(), (req, res) => {
-    console.log('🔥 Callback hit!');
-    console.log('Headers:', req.headers);
-    console.log('Body:', req.body);
-    res.sendStatus(200).send('OK');
-});
+router.post('/documents/callback', express.json(), callbackController.handleDocumentUploadCallback)
+// router.post('/documents/callback', express.json(), (req, res) => {
+//     console.log('🔥 Callback hit!');
+//     console.log('Headers:', req.headers);
+//     console.log('Body:', req.body);
+//     res.sendStatus(200).send('OK');
+// });
 
 module.exports = router
 
