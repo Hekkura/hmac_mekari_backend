@@ -6,34 +6,41 @@ const getController = require('../controllers/mekariGetController.js')
 const postController = require('../controllers/mekariPostController.js')
 const profileController = require('../controllers/profileController.js')
 const callbackController = require('../controllers/callbackController.js')
+const stampController = require('../controllers/postStampController.js')
+const signController = require('../controllers/postSignController.js')
 
-// Profiles
+
+// Profiles ================================
 router.get('/mekariProfile', profileController.getMekariProfile)
 router.get('/getProfile', profileController.getProfileData) //change names
 router.post('/postProfile',profileController.postProfileData) //change names
 router.delete('/delProfile', profileController.deleteProfileData) //change names
 
-// Get Routes
+// Get Routes ==============================
 router.get('/documents', getController.getDocumentLists)
 router.get('/documents/:documentId', getController.getDocumentDetail)
 router.get('/download-pdf/:documentId', getController.getDownload)
 
-// Post Routes
+// Post Routes =================================
 router.post('/documents/upload',
     upload.single('doc'), // 'doc' is the key name of the file field in form-data
     handleMulterError, 
     postController.postUploadDoc
 )
-router.post('/requestSign', postController.postRequestSign)
 
+// request sign ==================================
+router.post('/requestSign', signController.postRequestSign)
 router.post('/requestSign-test',
     upload.single('doc'),
     handleMulterError,
-    postController.postRequestSignTEST
+    signController.postRequestSignTEST_RailsStyle
+    // postController.postRequestSignTEST
     )
 
+// request stamp ===================================
+router.post('/requestStamp', stampController.postStamp)
 
-// Callback Routes
+// Callback Routes =============================
 router.post('/documents/callback', express.json(), callbackController.handleDocumentUploadCallback)
 // router.post('/documents/callback', express.json(), (req, res) => {
 //     console.log('🔥 Callback hit!');

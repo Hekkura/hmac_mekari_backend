@@ -50,7 +50,7 @@ class HmacAuthService {
                 'Authorization': `hmac username="${process.env.CLIENT_ID}", algorithm="hmac-sha256", headers="date request-line", signature="${signature}"`,
         }
         if(bodyDigest) { 
-            headers['Digest'] = `SHA-256=${debugInfo.bodyDigest}`
+            headers['Digest'] = `SHA-256=${bodyDigest}`
         }
 
         return headers

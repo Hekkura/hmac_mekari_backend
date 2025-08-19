@@ -2,121 +2,6 @@ const apiClient = require('../services/apiMekari.js')
 const HmacAuthService = require('../services/hmacAuthService.js')
 const FormData = require('form-data')
 
-//Global - Request Sign
-exports.postRequestSign = async (req, res) => { 
-    const apiConfig = {
-        apiEndpoint: '/v2/esign/v1/documents/request_global_sign',
-        apiMethod: 'POST',
-        body: req.body
-    }
-    console.log("Body", req.body)
-    const headers = HmacAuthService.generateHeaders(apiConfig)
-    console.log("Headers", headers)
-
-    try { 
-        const response = await apiClient.post(
-            apiConfig.apiEndpoint, 
-            req.body,
-            { headers: headers,
-              timeout: 10000 //10s
-            },
-        )
-        const { id } = response.data.data
-        res.status(200).json({ ...response.data, document_id: id })
-    } catch (error) { 
-        console.error('Post Error : ', error.response?.data || error.message)
-        res.status(error.response?.status || 500).json({ 
-            error: error.response?.data || 'Internal server error',
-            message: error.message 
-        })
-    }
-}
-
-// ========================================
-// Global - Request Sign (File Test)
-exports.postRequestSignTEST = async (req, res) => { 
-    try { 
-        if(!req.file) {
-            return res.status(400).json({ error:'No file uploaded' })
-        }
-
-        const { filename, signers } = req.body
-
-        //Build Formdata
-        const form = new FormData() 
-        form.append('doc', req.file.buffer, { 
-            filename: req.file.originalname,
-            contentType: req.file.mimetype,
-            knownLength: req.file.size
-        })
-        form.append('filename', filename || req.file.originalname)
-        // form.append('signers', JSON.parse(signers) || JSON.parse([
-        //     {
-        //         name: 'Signer 1',
-        //         email: 'egatesting1@yopmail.com',
-        //         phone_number: {
-        //             country_code: '62',
-        //             number: '+6282103452716'
-        //         }
-        //     }
-        // ]))
-         
-        const apiConfig = {
-            apiEndpoint: '/v2/esign/v1/documents/request_global_sign', 
-            apiMethod : 'POST'
-        }
-        const hmacHeaders = HmacAuthService.generateHeaders(apiConfig)
-    
-        const headers = { 
-            ...hmacHeaders,
-            ...form.getHeaders() //set correct multipart boundary
-        }
-    
-        console.log('Headers : ', headers)
-
-        const response = await apiClient.post(
-            apiConfig.apiEndpoint, form, { headers }
-        )
-        res.status(response.status).json(response.data) 
-        console.log("Response: ", response.data)
-    
-    } catch (error) { 
-        console.error('eMeterai Stamp  Error : ', error.response?.data || error.message)
-        res.status(error.response?.status || 500).json({ 
-            error: error.response?.data || 'Failed to apply eMeterai stamp',
-            message: error.message 
-        })
-    }
-}
-
-
-// ========================================
-
-// Stamp eMeterai to the Document
-exports.postStamp = async (req, res) => { 
-    const apiConfig = {
-            apiEndpoint: '/v2/esign/v1/documents/stamp',
-            apiMethod: 'POST',
-            body: req.body
-        }
-    const headers = HmacAuthService.generateHeaders(apiConfig)
-    try { 
-        const response = await apiClient.post(
-            apiConfig.apiEndpoint, 
-            req.body,
-            { headers: headers },
-        )
-        const { id } = response.data.data
-        res.status(200).json(response.data)
-    } catch (error) { 
-        console.error('eMeterai Stamp  Error : ', error.response?.data || error.message)
-        res.status(error.response?.status || 500).json({ 
-            error: error.response?.data || 'Failed to apply eMeterai stamp',
-            message: error.message 
-        })
-    }
-}
-
 // Upload Document : Note cannot use generateHeaders function, 
 // because wrong data type (not JSON, but multipart form.)
 exports.postUploadDoc = async (req, res) => { 
@@ -168,3 +53,7 @@ exports.postUploadDoc = async (req, res) => {
         })
     }
 }
+
+//================================================
+
+
