@@ -39,6 +39,16 @@ router.post('/requestSign-test',
 
 // request stamp ===================================
 router.post('/requestStamp', stampController.postStamp)
+router.post('/requestStamp-test',
+    upload.single('doc'),
+    handleMulterError,
+    stampController.postStampTEST
+)
+router.post('/requestStamp-Form',
+    upload.single('doc'),
+    handleMulterError,
+    stampController.postStampFormData
+)
 
 // Callback Routes =============================
 router.post('/documents/callback', express.json(), callbackController.handleDocumentUploadCallback)
